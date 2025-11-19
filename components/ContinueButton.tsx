@@ -49,7 +49,7 @@ export default function ContinueButton({ onPress, disabled = false, loading = fa
             {loading ? (
               <ActivityIndicator size="small" color="rgba(10, 14, 31, 0.9)" />
             ) : (
-              <Text style={styles.text}>Continue</Text>
+              <Text style={styles.text} allowFontScaling={false}>Continue</Text>
             )}
           </LinearGradient>
         </MotiView>
@@ -94,9 +94,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
   },
   text: {
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 16,
+    fontFamily: 'PlusJakarta-Bold',
     color: 'rgba(10, 14, 31, 0.95)',
-    letterSpacing: -0.3,
+    letterSpacing: -0.4,
   },
 });

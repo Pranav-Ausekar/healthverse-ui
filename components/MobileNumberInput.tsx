@@ -75,6 +75,8 @@ export default function MobileNumberInput({ value, onChangeText, error, onSubmit
               onSubmitEditing={onSubmit}
               returnKeyType="done"
               selectionColor="rgba(183, 148, 246, 0.5)"
+              placeholder="0000000000"
+              placeholderTextColor="rgba(255, 255, 255, 0.15)"
             />
           </View>
         </View>
@@ -122,41 +124,46 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
     borderRadius: 18,
     borderWidth: 1,
     paddingHorizontal: 20,
-    paddingVertical: 20,
-    minHeight: 66,
+    paddingVertical: 18,
+    minHeight: 68,
     shadowColor: '#b794f6',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0,
-    shadowRadius: 8,
+    shadowRadius: 12,
     elevation: 0,
   },
   inputFocused: {
-    elevation: 4,
+    elevation: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
   },
   iconWrapper: {
     marginRight: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   inputWrapper: {
     flex: 1,
     justifyContent: 'center',
+    height: 56,
   },
   labelContainer: {
     position: 'absolute',
     left: 0,
+    top: 12,
   },
   label: {
     fontSize: 16,
-    fontWeight: '400',
+    fontFamily: 'Inter-Regular',
     color: 'rgba(255, 255, 255, 0.4)',
     letterSpacing: -0.3,
   },
   labelFloating: {
     fontSize: 12,
-    fontWeight: '500',
+    fontFamily: 'Inter-Medium',
     color: 'rgba(255, 255, 255, 0.5)',
   },
   labelFocused: {
@@ -165,21 +172,24 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-start',
+    height: 56,
   },
   countryCode: {
-    fontSize: 17,
-    fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.8)',
-    marginRight: 6,
-    letterSpacing: -0.3,
+    fontSize: 16,
+    fontFamily: 'DMSans-Medium',
+    color: 'rgba(255, 255, 255, 0.85)',
+    marginRight: 8,
+    letterSpacing: -0.2,
   },
   input: {
     flex: 1,
-    fontSize: 17,
-    fontWeight: '500',
+    fontSize: 16,
+    fontFamily: 'DMSans-Medium',
     color: '#FFFFFF',
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
     padding: 0,
+    lineHeight: 24,
   },
   checkmark: {
     marginLeft: 8,

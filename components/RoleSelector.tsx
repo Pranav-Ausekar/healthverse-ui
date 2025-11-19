@@ -47,7 +47,7 @@ export default function RoleSelector({ selectedRole, onSelectRole }: RoleSelecto
                 color={isSelected ? '#b794f6' : 'rgba(255, 255, 255, 0.4)'}
                 strokeWidth={1.8}
               />
-              <Text style={[styles.chipText, isSelected && styles.chipTextSelected]}>
+              <Text style={[styles.chipText, isSelected && styles.chipTextSelected]} allowFontScaling={false}>
                 {role.label}
               </Text>
             </MotiView>
@@ -80,12 +80,12 @@ const styles = StyleSheet.create({
   },
   chipText: {
     fontSize: 13,
-    fontWeight: '500',
+    fontFamily: 'Inter-Medium',
     color: 'rgba(255, 255, 255, 0.5)',
     letterSpacing: -0.3,
   },
   chipTextSelected: {
     color: '#b794f6',
-    fontWeight: '600',
+    fontFamily: 'Inter-SemiBold',
   },
 });

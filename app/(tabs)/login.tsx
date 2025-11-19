@@ -69,12 +69,18 @@ export default function LoginScreen() {
         style={styles.gradientOverlay}
       >
         <LinearGradient
-          colors={['rgba(138, 102, 208, 0.08)', 'rgba(72, 61, 139, 0.05)', 'transparent']}
+          colors={['rgba(138, 102, 208, 0.12)', 'rgba(100, 80, 180, 0.08)', 'rgba(72, 61, 139, 0.06)']}
           style={styles.gradientOverlayInner}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+          start={{ x: 0.2, y: 0.2 }}
+          end={{ x: 0.8, y: 0.8 }}
         />
       </MotiView>
+
+      <View style={styles.blurLayerWrapper}>
+        <View style={styles.blurLayer1} />
+        <View style={styles.blurLayer2} />
+        <View style={styles.blurLayer3} />
+      </View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -97,8 +103,8 @@ export default function LoginScreen() {
           >
             <PremiumHealthIcon />
 
-            <Text style={styles.appName}>HealthVault</Text>
-            <Text style={styles.tagline}>Your family's lifelong health timeline.</Text>
+            <Text style={styles.appName} allowFontScaling={false}>HealthVault</Text>
+            <Text style={styles.tagline} allowFontScaling={false}>Your family's lifelong health timeline.</Text>
           </MotiView>
 
           <MotiView
@@ -141,13 +147,13 @@ export default function LoginScreen() {
             style={styles.footer}
           >
             <TouchableOpacity activeOpacity={0.6}>
-              <Text style={styles.footerLink}>
+              <Text style={styles.footerLink} allowFontScaling={false}>
                 New here? <Text style={styles.footerLinkBold}>Create an account</Text>
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity activeOpacity={0.6} style={styles.helpButton}>
-              <Text style={styles.helpText}>Need help?</Text>
+              <Text style={styles.helpText} allowFontScaling={false}>Need help?</Text>
             </TouchableOpacity>
           </MotiView>
         </ScrollView>
@@ -178,67 +184,108 @@ const styles = StyleSheet.create({
   gradientOverlayInner: {
     flex: 1,
   },
+  blurLayerWrapper: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    pointerEvents: 'none',
+  },
+  blurLayer1: {
+    position: 'absolute',
+    width: 400,
+    height: 400,
+    borderRadius: 200,
+    backgroundColor: 'rgba(183, 148, 246, 0.08)',
+    top: -100,
+    left: -100,
+  },
+  blurLayer2: {
+    position: 'absolute',
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    backgroundColor: 'rgba(100, 80, 180, 0.06)',
+    bottom: -50,
+    right: -50,
+  },
+  blurLayer3: {
+    position: 'absolute',
+    width: 250,
+    height: 250,
+    borderRadius: 125,
+    backgroundColor: 'rgba(138, 102, 208, 0.05)',
+    top: '50%',
+    left: '50%',
+    marginLeft: -125,
+    marginTop: -125,
+  },
   keyboardView: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 40,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 48,
+    marginBottom: 52,
   },
   appName: {
-    fontSize: 28,
-    fontWeight: '700',
+    fontSize: 32,
+    fontFamily: 'PlusJakarta-Bold',
     color: '#FFFFFF',
-    marginTop: 24,
-    marginBottom: 8,
-    letterSpacing: -0.5,
+    marginTop: 28,
+    marginBottom: 12,
+    letterSpacing: -0.8,
   },
   tagline: {
     fontSize: 15,
-    fontWeight: '400',
+    fontFamily: 'Inter-Regular',
     color: 'rgba(255, 255, 255, 0.65)',
     textAlign: 'center',
-    letterSpacing: -0.2,
-    lineHeight: 22,
+    letterSpacing: -0.3,
+    lineHeight: 24,
   },
   cardWrapper: {
     width: '100%',
-    marginBottom: 40,
+    marginBottom: 44,
   },
   cardShadow: {
     position: 'absolute',
-    top: 8,
-    left: 0,
-    right: 0,
-    bottom: -8,
-    backgroundColor: 'rgba(138, 102, 208, 0.15)',
-    borderRadius: 32,
+    top: 0,
+    left: -12,
+    right: -12,
+    bottom: -12,
+    backgroundColor: 'rgba(138, 102, 208, 0.25)',
+    borderRadius: 36,
     shadowColor: '#8a66d0',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.3,
-    shadowRadius: 40,
-    elevation: 20,
+    shadowOffset: { width: 0, height: 32 },
+    shadowOpacity: 0.45,
+    shadowRadius: 48,
+    elevation: 25,
   },
   glassCard: {
     borderRadius: 32,
     overflow: 'hidden',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
   },
   cardBorder: {
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(183, 148, 246, 0.25)',
     borderRadius: 32,
-    padding: 2,
+    padding: 1.5,
   },
   cardContent: {
     paddingHorizontal: 28,
-    paddingVertical: 36,
+    paddingVertical: 40,
+    backgroundColor: 'rgba(10, 14, 31, 0.3)',
+    borderRadius: 31,
   },
   footer: {
     alignItems: 'center',
@@ -247,23 +294,25 @@ const styles = StyleSheet.create({
   },
   footerLink: {
     fontSize: 14,
-    fontWeight: '400',
+    fontFamily: 'Inter-Regular',
     color: 'rgba(255, 255, 255, 0.45)',
     textAlign: 'center',
+    letterSpacing: -0.3,
   },
   footerLinkBold: {
-    fontWeight: '600',
+    fontFamily: 'Inter-SemiBold',
     color: 'rgba(255, 255, 255, 0.75)',
     textDecorationLine: 'underline',
     textDecorationColor: 'rgba(255, 255, 255, 0.3)',
   },
   helpButton: {
-    paddingVertical: 4,
+    paddingVertical: 6,
   },
   helpText: {
     fontSize: 13,
-    fontWeight: '500',
+    fontFamily: 'Inter-Medium',
     color: 'rgba(255, 255, 255, 0.4)',
     textAlign: 'center',
+    letterSpacing: -0.2,
   },
 });
