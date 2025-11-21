@@ -48,7 +48,7 @@ export default function OnboardingSlide1() {
         transition={{ type: 'timing', duration: 600, delay: 600 }}
         style={styles.textContainer}
       >
-        <Text style={styles.title}>Your Health. Organized.</Text>
+        <Text style={styles.title}>healthXverse</Text>
         <Text style={styles.description}>
           One place for all your medical records.
         </Text>
