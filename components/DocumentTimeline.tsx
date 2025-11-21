@@ -7,14 +7,11 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
   interpolate,
   Extrapolate,
 } from 'react-native-reanimated';
-import { FileText, Image as ImageIcon, Upload, X, Layers, Sparkles } from 'lucide-react-native';
+import { Upload, X, Layers } from 'lucide-react-native';
 import { useTheme, lightTheme, darkTheme } from '../contexts/ThemeContext';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export interface Document {
   id: string;
@@ -56,157 +53,134 @@ const getDocumentColor = (type: string, isDark: boolean) => {
   return colors[type as keyof typeof colors] || colors.other;
 };
 
-function TimelineCard3D({
+function TimelineNode({
   doc,
   index,
+  total,
   color,
   isDark,
   colors,
-  onPress
+  onPress,
 }: {
   doc: Document;
   index: number;
+  total: number;
   color: string;
   isDark: boolean;
   colors: any;
   onPress: () => void;
 }) {
-  const rotateX = useSharedValue(0);
-  const rotateY = useSharedValue(0);
   const scale = useSharedValue(1);
-  const translateZ = useSharedValue(0);
+  const rotateZ = useSharedValue(0);
 
   const gesture = Gesture.Pan()
     .onBegin(() => {
-      scale.value = withSpring(1.05);
-      translateZ.value = withSpring(20);
-    })
-    .onUpdate((event) => {
-      rotateX.value = interpolate(
-        event.translationY,
-        [-100, 0, 100],
-        [15, 0, -15],
-        Extrapolate.CLAMP
-      );
-      rotateY.value = interpolate(
-        event.translationX,
-        [-100, 0, 100],
-        [-15, 0, 15],
-        Extrapolate.CLAMP
-      );
+      scale.value = withSpring(1.15);
+      rotateZ.value = withSpring(360);
     })
     .onEnd(() => {
-      rotateX.value = withSpring(0);
-      rotateY.value = withSpring(0);
       scale.value = withSpring(1);
-      translateZ.value = withSpring(0);
+      rotateZ.value = withSpring(0);
     });
 
-  const animatedStyle = useAnimatedStyle(() => {
+  const animatedNodeStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { perspective: 1000 },
-        { rotateX: `${rotateX.value}deg` },
-        { rotateY: `${rotateY.value}deg` },
         { scale: scale.value },
-        { translateZ: translateZ.value },
-      ],
+        { rotateZ: `${rotateZ.value}deg` },
+      ] as any,
     };
   });
 
+  const isLeft = index % 2 === 0;
+
   return (
-    <GestureDetector gesture={gesture}>
-      <Animated.View style={[styles.card3DWrapper, animatedStyle]}>
+    <MotiView
+      from={{
+        opacity: 0,
+        scale: 0.5,
+      }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+      }}
+      transition={{
+        type: 'spring',
+        delay: 200 + index * 150,
+        damping: 15,
+        stiffness: 100,
+      }}
+      style={[
+        styles.timelineItemContainer,
+        { justifyContent: isLeft ? 'flex-start' : 'flex-end' },
+      ]}
+    >
+      <View
+        style={[
+          styles.timelineItemRow,
+          { flexDirection: isLeft ? 'row' : 'row-reverse' },
+        ]}
+      >
+        {/* Content Card */}
         <TouchableOpacity
-          activeOpacity={0.9}
           onPress={onPress}
-          style={styles.card3DTouch}
+          style={[styles.contentCard, { maxWidth: '60%' }]}
+          activeOpacity={0.7}
         >
           <LinearGradient
-            colors={isDark
-              ? [`${color}15`, `${color}05`]
-              : [`${color}10`, `${color}05`]
+            colors={
+              isDark
+                ? [`${color}15`, `${color}08`]
+                : [`${color}12`, `${color}06`]
             }
-            style={[styles.card3D, { borderColor: `${color}40` }]}
+            style={[
+              styles.cardGradient,
+              {
+                borderColor: `${color}30`,
+                borderLeftColor: color,
+                borderLeftWidth: 4,
+              },
+            ]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
           >
-            <View style={styles.card3DInner}>
-              <View style={[styles.iconContainer3D, { backgroundColor: `${color}25` }]}>
-                <MotiView
-                  from={{ scale: 0, rotate: '-180deg' }}
-                  animate={{ scale: 1, rotate: '0deg' }}
-                  transition={{
-                    delay: 400 + index * 100,
-                    type: 'spring',
-                    damping: 12,
-                  }}
-                >
-                  <Text style={styles.docIcon3D}>{getDocumentIcon(doc.type)}</Text>
-                </MotiView>
-
-                <View style={[styles.sparkleContainer]}>
-                  <MotiView
-                    animate={{
-                      opacity: [0.4, 1, 0.4],
-                      scale: [0.8, 1, 0.8],
-                    }}
-                    transition={{
-                      type: 'timing',
-                      duration: 2000,
-                      loop: true,
-                    }}
-                  >
-                    <Sparkles size={12} color={color} strokeWidth={2} />
-                  </MotiView>
-                </View>
-              </View>
-
-              <View style={styles.contentContainer3D}>
-                <View style={styles.typeRow}>
-                  <View style={[styles.typeBadge, { backgroundColor: `${color}20` }]}>
-                    <Text style={[styles.typeText, { color: color }]}>
-                      {doc.type.toUpperCase()}
-                    </Text>
-                  </View>
-                  <Layers size={14} color={colors.textTertiary} strokeWidth={2} />
-                </View>
-
-                <Text style={[styles.docTitle3D, { color: colors.text }]} numberOfLines={2}>
-                  {doc.title}
-                </Text>
-
-                <Text style={[styles.docDate3D, { color: colors.textSecondary }]}>
-                  {doc.date}
-                </Text>
-              </View>
-            </View>
-
-            <View style={[styles.glowLine, { backgroundColor: color }]} />
-
-            <View style={styles.layerIndicators}>
-              {[0, 1, 2].map((i) => (
-                <MotiView
-                  key={i}
-                  from={{ opacity: 0 }}
-                  animate={{ opacity: 0.3 }}
-                  transition={{ delay: 600 + index * 100 + i * 50 }}
-                  style={[styles.layerDot, { backgroundColor: color }]}
-                />
-              ))}
-            </View>
+            <Text style={[styles.cardType, { color }]}>
+              {doc.type.toUpperCase()}
+            </Text>
+            <Text style={[styles.cardTitle, { color: colors.text }]}>
+              {doc.title}
+            </Text>
+            <Text style={[styles.cardDate, { color: colors.textTertiary }]}>
+              {doc.date}
+            </Text>
           </LinearGradient>
         </TouchableOpacity>
-      </Animated.View>
-    </GestureDetector>
+
+        {/* Node */}
+        <GestureDetector gesture={gesture}>
+          <Animated.View style={[styles.nodeWrapper, animatedNodeStyle]}>
+            <View style={[styles.nodeOuter, { borderColor: color }]}>
+              <View style={[styles.nodeInner, { backgroundColor: color }]}>
+                <Text style={styles.nodeIcon}>
+                  {getDocumentIcon(doc.type)}
+                </Text>
+              </View>
+            </View>
+          </Animated.View>
+        </GestureDetector>
+      </View>
+    </MotiView>
   );
 }
 
-export function DocumentTimeline({ documents, onUpload, onViewDocument }: DocumentTimelineProps) {
+export function DocumentTimeline({
+  documents,
+  onUpload,
+  onViewDocument,
+}: DocumentTimelineProps) {
   const { isDark } = useTheme();
   const colors = isDark ? darkTheme : lightTheme;
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
-  const scrollY = useSharedValue(0);
 
   const sortedDocs = [...documents].sort((a, b) => b.timestamp - a.timestamp);
 
@@ -216,11 +190,19 @@ export function DocumentTimeline({ documents, onUpload, onViewDocument }: Docume
         from={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 300, damping: 15 } as any}
-        style={[styles.emptyCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}
+        style={[
+          styles.emptyCard,
+          {
+            backgroundColor: colors.cardBg,
+            borderColor: colors.cardBorder,
+          },
+        ]}
       >
         <View style={[styles.emptyContainer, { backgroundColor: colors.accentLight }]}>
           <Upload size={40} color={colors.accent} strokeWidth={1.5} />
-          <Text style={[styles.emptyTitle, { color: colors.text }]}>No Documents Yet</Text>
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>
+            No Documents Yet
+          </Text>
           <Text style={[styles.emptySubtitle, { color: colors.textTertiary }]}>
             Upload your medical documents
           </Text>
@@ -247,52 +229,57 @@ export function DocumentTimeline({ documents, onUpload, onViewDocument }: Docume
         from={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 300, damping: 15 } as any}
-        style={[styles.mainCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}
+        style={[
+          styles.mainCard,
+          {
+            backgroundColor: colors.cardBg,
+            borderColor: colors.cardBorder,
+          },
+        ]}
       >
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <Text style={[styles.title, { color: colors.text }]}>Documents Timeline</Text>
+            <Text style={[styles.title, { color: colors.text }]}>
+              Documents Timeline
+            </Text>
             <View style={[styles.countBadge, { backgroundColor: colors.accentLight }]}>
-              <Text style={[styles.count, { color: colors.accent }]}>{documents.length}</Text>
+              <Text style={[styles.count, { color: colors.accent }]}>
+                {documents.length}
+              </Text>
             </View>
           </View>
           <Layers size={20} color={colors.accent} strokeWidth={2} />
         </View>
 
-        <View style={styles.timeline3D}>
+        {/* Vertical Timeline */}
+        <View style={styles.timelineContainer}>
+          {/* Timeline Line */}
+          <View
+            style={[
+              styles.timelineLine,
+              {
+                backgroundColor: isDark
+                  ? 'rgba(255, 255, 255, 0.1)'
+                  : 'rgba(0, 0, 0, 0.08)',
+              },
+            ]}
+          />
+
+          {/* Timeline Items */}
           {sortedDocs.map((doc, index) => {
             const color = getDocumentColor(doc.type, isDark);
 
             return (
-              <MotiView
+              <TimelineNode
                 key={doc.id}
-                from={{
-                  opacity: 0,
-                  translateX: -50,
-                  scale: 0.8,
-                }}
-                animate={{
-                  opacity: 1,
-                  translateX: 0,
-                  scale: 1,
-                }}
-                transition={{
-                  type: 'spring',
-                  delay: 300 + index * 150,
-                  damping: 15,
-                  stiffness: 80,
-                }}
-                style={styles.timelineItem3D}
-              >
-                <TimelineCard3D
-                  doc={doc}
-                  index={index}
-                  color={color}
-                  isDark={isDark}
-                  colors={colors}
-                  onPress={() => setSelectedDoc(doc)}
-                />
-              </MotiView>
+                doc={doc}
+                index={index}
+                total={sortedDocs.length}
+                color={color}
+                isDark={isDark}
+                colors={colors}
+                onPress={() => setSelectedDoc(doc)}
+              />
             );
           })}
         </View>
@@ -316,15 +303,26 @@ export function DocumentTimeline({ documents, onUpload, onViewDocument }: Docume
         animationType="fade"
         onRequestClose={() => setSelectedDoc(null)}
       >
-        <View style={[styles.modalOverlay, { backgroundColor: isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(0, 0, 0, 0.8)' }]}>
+        <View
+          style={[
+            styles.modalOverlay,
+            {
+              backgroundColor: isDark
+                ? 'rgba(15, 23, 42, 0.95)'
+                : 'rgba(0, 0, 0, 0.8)',
+            },
+          ]}
+        >
           <MotiView
-            from={{ scale: 0.8, opacity: 0, rotateX: '45deg' }}
-            animate={{ scale: 1, opacity: 1, rotateX: '0deg' }}
+            from={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', damping: 20 }}
             style={[styles.modalContent, { backgroundColor: colors.containerBg }]}
           >
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.text }]}>{selectedDoc?.title}</Text>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>
+                {selectedDoc?.title}
+              </Text>
               <TouchableOpacity onPress={() => setSelectedDoc(null)}>
                 <X size={24} color={colors.text} strokeWidth={2} />
               </TouchableOpacity>
@@ -332,41 +330,51 @@ export function DocumentTimeline({ documents, onUpload, onViewDocument }: Docume
 
             <View style={styles.modalDivider} />
 
-            <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false}>
+            <ScrollView
+              style={styles.modalBody}
+              showsVerticalScrollIndicator={false}
+            >
               <View style={styles.docDetails}>
                 <View style={styles.detailRow}>
-                  <Text style={[styles.detailLabel, { color: colors.textTertiary }]}>Type</Text>
+                  <Text style={[styles.detailLabel, { color: colors.textTertiary }]}>
+                    Type
+                  </Text>
                   <Text style={[styles.detailValue, { color: colors.text }]}>
-                    {selectedDoc?.type.charAt(0).toUpperCase()}{selectedDoc?.type.slice(1)}
+                    {selectedDoc?.type.charAt(0).toUpperCase()}
+                    {selectedDoc?.type.slice(1)}
                   </Text>
                 </View>
 
                 <View style={styles.detailRow}>
-                  <Text style={[styles.detailLabel, { color: colors.textTertiary }]}>Date</Text>
-                  <Text style={[styles.detailValue, { color: colors.text }]}>{selectedDoc?.date}</Text>
+                  <Text style={[styles.detailLabel, { color: colors.textTertiary }]}>
+                    Date
+                  </Text>
+                  <Text style={[styles.detailValue, { color: colors.text }]}>
+                    {selectedDoc?.date}
+                  </Text>
                 </View>
 
                 {selectedDoc?.fileType && (
                   <View style={styles.detailRow}>
-                    <Text style={[styles.detailLabel, { color: colors.textTertiary }]}>File Type</Text>
-                    <Text style={[styles.detailValue, { color: colors.text }]}>{selectedDoc.fileType}</Text>
-                  </View>
-                )}
-
-                {selectedDoc?.url && (
-                  <View style={[styles.previewContainer, { backgroundColor: colors.cardBg }]}>
-                    <View style={styles.previewPlaceholder}>
-                      <ImageIcon size={48} color={colors.textTertiary} strokeWidth={1.5} />
-                      <Text style={[styles.previewText, { color: colors.textTertiary }]}>Document Preview</Text>
-                    </View>
+                    <Text style={[styles.detailLabel, { color: colors.textTertiary }]}>
+                      File Type
+                    </Text>
+                    <Text style={[styles.detailValue, { color: colors.text }]}>
+                      {selectedDoc.fileType}
+                    </Text>
                   </View>
                 )}
               </View>
             </ScrollView>
 
             <View style={styles.modalFooter}>
-              <TouchableOpacity onPress={() => setSelectedDoc(null)} style={[styles.closeButton, { backgroundColor: colors.cardBg }]}>
-                <Text style={[styles.closeButtonText, { color: colors.text }]}>Close</Text>
+              <TouchableOpacity
+                onPress={() => setSelectedDoc(null)}
+                style={[styles.closeButton, { backgroundColor: colors.cardBg }]}
+              >
+                <Text style={[styles.closeButtonText, { color: colors.text }]}>
+                  Close
+                </Text>
               </TouchableOpacity>
             </View>
           </MotiView>
@@ -448,103 +456,85 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Inter-Bold',
   },
-  timeline3D: {
-    gap: 16,
+  timelineContainer: {
+    position: 'relative',
+    paddingVertical: 8,
     marginBottom: 20,
   },
-  timelineItem3D: {
-    width: '100%',
-  },
-  card3DWrapper: {
-    width: '100%',
-    height: 140,
-  },
-  card3DTouch: {
-    flex: 1,
-  },
-  card3D: {
-    flex: 1,
-    borderRadius: 20,
-    borderWidth: 2,
-    overflow: 'hidden',
-    position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  card3DInner: {
-    flex: 1,
-    flexDirection: 'row',
-    padding: 16,
-    gap: 16,
-  },
-  iconContainer3D: {
-    width: 80,
-    height: 80,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
-    position: 'relative',
-  },
-  docIcon3D: {
-    fontSize: 36,
-  },
-  sparkleContainer: {
+  timelineLine: {
     position: 'absolute',
-    top: 4,
-    right: 4,
+    left: '50%',
+    top: 0,
+    bottom: 0,
+    width: 3,
+    marginLeft: -1.5,
+    zIndex: 0,
   },
-  contentContainer3D: {
-    flex: 1,
-    justifyContent: 'center',
-    gap: 6,
+  timelineItemContainer: {
+    marginBottom: 32,
+    paddingHorizontal: 16,
   },
-  typeRow: {
-    flexDirection: 'row',
+  timelineItemRow: {
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  typeBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
+  contentCard: {
+    paddingHorizontal: 12,
   },
-  typeText: {
+  cardGradient: {
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  cardType: {
     fontSize: 10,
     fontFamily: 'Inter-Bold',
     letterSpacing: 0.5,
+    marginBottom: 4,
+    textTransform: 'uppercase',
   },
-  docTitle3D: {
-    fontSize: 16,
-    fontFamily: 'Inter-Bold',
-    lineHeight: 22,
+  cardTitle: {
+    fontSize: 14,
+    fontFamily: 'Inter-SemiBold',
+    marginBottom: 4,
+    lineHeight: 18,
   },
-  docDate3D: {
-    fontSize: 13,
-    fontFamily: 'Inter-Medium',
+  cardDate: {
+    fontSize: 12,
+    fontFamily: 'Inter-Regular',
   },
-  glowLine: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 3,
-    opacity: 0.6,
+  nodeWrapper: {
+    zIndex: 10,
   },
-  layerIndicators: {
-    position: 'absolute',
-    bottom: 10,
-    right: 16,
-    flexDirection: 'row',
-    gap: 6,
+  nodeOuter: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    borderWidth: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 5,
   },
-  layerDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+  nodeInner: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  nodeIcon: {
+    fontSize: 20,
   },
   addButton: {
     borderRadius: 16,
@@ -611,22 +601,6 @@ const styles = StyleSheet.create({
   detailValue: {
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
-  },
-  previewContainer: {
-    borderRadius: 16,
-    padding: 24,
-    minHeight: 200,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 8,
-  },
-  previewPlaceholder: {
-    alignItems: 'center',
-    gap: 12,
-  },
-  previewText: {
-    fontSize: 14,
-    fontFamily: 'Inter-Medium',
   },
   modalFooter: {
     padding: 24,
