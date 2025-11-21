@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { MotiView } from 'moti';
-import { Activity } from 'lucide-react-native';
 
 export default function OnboardingSlide1() {
   return (
@@ -21,14 +20,18 @@ export default function OnboardingSlide1() {
             stiffness: 100,
             delay: 400,
           }}
-          style={styles.iconCircle}
+          style={styles.imageContainer}
         >
-          <Activity size={80} color="#3b82f6" strokeWidth={1.5} />
+          <Image
+            source={require('../assets/images/Gemini_Generated_Image_lf4jhdlf4jhdlf4j.png')}
+            style={styles.doctorImage}
+            resizeMode="cover"
+          />
         </MotiView>
 
         <MotiView
           from={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 0.3, scale: 1.2 }}
+          animate={{ opacity: 0.15, scale: 1.2 }}
           transition={{
             type: 'timing',
             duration: 2000,
@@ -67,21 +70,31 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     height: 280,
   },
-  iconCircle: {
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    backgroundColor: 'rgba(59, 130, 246, 0.08)',
+  imageContainer: {
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    overflow: 'hidden',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(59, 130, 246, 0.2)',
+    borderWidth: 3,
+    borderColor: 'rgba(59, 130, 246, 0.3)',
+    shadowColor: '#3b82f6',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  doctorImage: {
+    width: '100%',
+    height: '100%',
   },
   glowCircle: {
     position: 'absolute',
-    width: 240,
-    height: 240,
-    borderRadius: 120,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
     backgroundColor: '#3b82f6',
     zIndex: -1,
   },
