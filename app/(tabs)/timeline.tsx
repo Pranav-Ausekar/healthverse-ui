@@ -172,44 +172,41 @@ export default function TimelineScreen() {
 
             return (
               <View key={event.id}>
-                <MotiView
-                  from={{ opacity: 0, translateX: isLeft ? -50 : 50, scale: 0.9 }}
-                  animate={{ opacity: 1, translateX: 0, scale: 1 }}
-                  transition={{ delay: 400 + index * 100, type: 'spring', damping: 15 }}
-                  style={[styles.timelineItem, isLeft ? styles.timelineItemLeft : styles.timelineItemRight]}
-                >
+                <View style={[styles.timelineItem, isLeft ? styles.timelineItemLeft : styles.timelineItemRight]}>
                   <MotiView
                     from={{ scale: 0, rotate: '-180deg' }}
                     animate={{ scale: 1, rotate: '0deg' }}
-                    transition={{ delay: 500 + index * 100, type: 'spring', damping: 12 }}
+                    transition={{ delay: 400 + index * 100, type: 'spring', damping: 12 }}
                     style={[
                       styles.timelineNode,
                       { backgroundColor: color, borderColor: colors.containerBg },
                       isLeft ? styles.timelineNodeLeft : styles.timelineNodeRight
                     ]}
                   >
-                    <Icon size={18} color="#ffffff" strokeWidth={2.5} />
+                    <Icon size={16} color="#ffffff" strokeWidth={2.5} />
                   </MotiView>
 
-                  <View style={[styles.eventCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
-                    <View style={styles.eventHeader}>
-                      <View style={[styles.eventTypeBox, { backgroundColor: `${color}15` }]}>
-                        <Text style={[styles.eventType, { color }]}>{event.type}</Text>
+                  <MotiView
+                    from={{ opacity: 0, translateX: isLeft ? -40 : 40, scale: 0.9 }}
+                    animate={{ opacity: 1, translateX: 0, scale: 1 }}
+                    transition={{ delay: 500 + index * 100, type: 'spring', damping: 15 }}
+                    style={[styles.compactEventCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}
+                  >
+                    <View style={styles.compactEventContent}>
+                      <View style={styles.compactEventInfo}>
+                        <Text style={[styles.compactEventType, { color }]}>{event.type}</Text>
+                        <Text style={[styles.compactEventTitle, { color: colors.text }]}>{event.title}</Text>
+                        <Text style={[styles.compactEventDate, { color: colors.textTertiary }]}>{event.date}</Text>
                       </View>
-                      <Text style={[styles.eventDate, { color: colors.textTertiary }]}>{event.date}</Text>
-                    </View>
-                    <Text style={[styles.eventTitle, { color: colors.text }]}>{event.title}</Text>
-
-                    <View style={styles.eventFooter}>
                       <TouchableOpacity
-                        style={[styles.viewButton, { borderColor: color }]}
+                        style={[styles.compactViewButton, { backgroundColor: `${color}15`, borderColor: color }]}
                         onPress={() => handleViewDetails(event)}
                       >
-                        <Text style={[styles.viewButtonText, { color }]}>View Details</Text>
+                        <Eye size={16} color={color} strokeWidth={2} />
                       </TouchableOpacity>
                     </View>
-                  </View>
-                </MotiView>
+                  </MotiView>
+                </View>
 
                 {!isLast && (
                   <MotiView
@@ -440,36 +437,74 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: '50%',
     paddingHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    minHeight: 60,
   },
   timelineItemLeft: {
     alignSelf: 'flex-start',
     paddingRight: 20,
+    flexDirection: 'row-reverse',
   },
   timelineItemRight: {
     alignSelf: 'flex-end',
     paddingLeft: 20,
+    flexDirection: 'row',
   },
   timelineNode: {
-    position: 'absolute',
-    top: 12,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 3,
+    borderWidth: 2,
     zIndex: 2,
+    marginTop: 4,
+    flexShrink: 0,
   },
-  timelineNodeLeft: {
-    right: -18,
-  },
-  timelineNodeRight: {
-    left: -18,
-  },
-  eventCard: {
-    borderRadius: 12,
-    padding: 12,
+  timelineNodeLeft: {},
+  timelineNodeRight: {},
+  compactEventCard: {
+    flex: 1,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderWidth: 1,
+    marginHorizontal: 8,
+  },
+  compactEventContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  compactEventInfo: {
+    flex: 1,
+  },
+  compactEventType: {
+    fontSize: 10,
+    fontFamily: 'Inter-SemiBold',
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+    marginBottom: 4,
+  },
+  compactEventTitle: {
+    fontSize: 13,
+    fontFamily: 'Inter-SemiBold',
+    marginBottom: 3,
+  },
+  compactEventDate: {
+    fontSize: 10,
+    fontFamily: 'Inter-Regular',
+  },
+  compactViewButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    marginLeft: 8,
+    flexShrink: 0,
   },
   curvedConnector: {
     height: 40,
@@ -493,46 +528,6 @@ const styles = StyleSheet.create({
     marginRight: '50%',
     borderTopLeftRadius: 40,
     borderLeftWidth: 2,
-  },
-  eventHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  eventTypeBox: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  eventType: {
-    fontSize: 10,
-    fontFamily: 'Inter-SemiBold',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  eventDate: {
-    fontSize: 11,
-    fontFamily: 'Inter-Regular',
-  },
-  eventTitle: {
-    fontSize: 15,
-    fontFamily: 'Inter-Bold',
-    marginBottom: 8,
-  },
-  eventFooter: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  viewButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    borderWidth: 1.5,
-  },
-  viewButtonText: {
-    fontSize: 12,
-    fontFamily: 'Inter-SemiBold',
   },
   spacing: {
     height: 40,
