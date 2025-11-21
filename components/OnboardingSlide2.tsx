@@ -60,9 +60,10 @@ export default function OnboardingSlide2() {
         transition={{ type: 'timing', duration: 600, delay: 1000 }}
         style={styles.textContainer}
       >
-        <Text style={styles.title}>Care for Family</Text>
+        <Text style={styles.title}>Family Health, Simplified</Text>
         <Text style={styles.description}>
-          Manage every member in one secure app.
+          Track and manage health records{"\n"}
+          for your entire family effortlessly
         </Text>
       </MotiView>
     </View>

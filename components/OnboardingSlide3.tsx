@@ -35,7 +35,7 @@ export default function OnboardingSlide3() {
           style={styles.imageContainer}
         >
           <Image
-            source={require('../assets/images/Gemini_Generated_Image_sqa168sqa168sqa1.png')}
+            source={require('../assets/images/Gemini_Generated_Image_f91g9wf91g9wf91g.png')}
             style={styles.brainImage}
             resizeMode="cover"
           />
@@ -60,9 +60,10 @@ export default function OnboardingSlide3() {
         transition={{ type: 'timing', duration: 600, delay: 1000 }}
         style={styles.textContainer}
       >
-        <Text style={styles.title}>Smart & Private</Text>
+        <Text style={styles.title}>AI-Powered Intelligence</Text>
         <Text style={styles.description}>
-          AI-Powered Smart Health Timeline
+          Smart health insights with{"\n"}
+          complete privacy and security
         </Text>
       </MotiView>
     </View>
@@ -95,8 +96,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: isSmallScreen ? 3 : 4,
-    borderColor: 'rgba(245, 158, 11, 0.35)',
-    shadowColor: '#f59e0b',
+    borderColor: 'rgba(59, 130, 246, 0.35)',
+    shadowColor: '#3b82f6',
     shadowOffset: { width: 0, height: isSmallScreen ? 8 : 12 },
     shadowOpacity: 0.3,
     shadowRadius: isSmallScreen ? 16 : 20,
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     width: glowSize,
     height: glowSize,
     borderRadius: glowSize / 2,
-    backgroundColor: '#f59e0b',
+    backgroundColor: '#3b82f6',
     zIndex: -1,
   },
   textContainer: {
