@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     shadowColor: '#3b82f6',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.3,
-    shadowRadius: 24,
+    shadowRadius: 20,
     elevation: 12,
   },
   doctorImage: {
