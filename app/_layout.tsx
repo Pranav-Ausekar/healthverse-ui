@@ -6,6 +6,7 @@ import { SplashScreen } from 'expo-router';
 import { useFrameworkReady } from '../hooks/useFrameworkReady';
 import { ThemeProvider } from '../modules/shared/contexts/ThemeContext';
 import ErrorBoundary from './ErrorBoundary';
+import { LabRequestProvider } from '../modules/lab/contexts/LabRequestContext';
 
 let Inter_400Regular: any;
 let Inter_500Medium: any;
@@ -118,6 +119,7 @@ export default function RootLayout() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
+        <LabRequestProvider>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(patient)" />
@@ -127,6 +129,7 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="light" />
+          </LabRequestProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
