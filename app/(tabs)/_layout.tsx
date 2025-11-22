@@ -23,6 +23,7 @@ export default function TabLayout() {
       <Tabs.Screen name="lab-home" />
       <Tabs.Screen name="timeline" />
       <Tabs.Screen name="upload-document" />
+      <Tabs.Screen name="search" />
     </Tabs>
   );
 }
