@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { View, StyleSheet, Platform, StatusBar } from 'react-native';
+import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme, lightTheme, darkTheme } from '../../contexts/ThemeContext';
 import SearchBar from '../../components/SearchBar';
@@ -11,6 +12,7 @@ import { DoctorCardData } from '../../components/DoctorCard';
 export default function SearchScreen() {
   const { isDark } = useTheme();
   const colors = isDark ? darkTheme : lightTheme;
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredDoctors = useMemo(() => {
@@ -26,7 +28,10 @@ export default function SearchScreen() {
   };
 
   const handleCardPress = (doctor: DoctorCardData) => {
-    console.log('Doctor selected:', doctor.name);
+    router.push({
+      pathname: '/doctor-profile-detail',
+      params: { id: doctor.id },
+    });
   };
 
   const showResults = searchQuery.trim().length > 0;
